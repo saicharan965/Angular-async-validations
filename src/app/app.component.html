@@ -1,23 +1,32 @@
 <div class="container mt-5 border border-4 p-4 rounded">
+  <form [formGroup]="userDetails">
+    <div class="mb-3">
+      <label for="userName" class="form-label">UserName</label>
+      <input formControlName="userName" class="form-control" id="userName">
+      <small class="text-danger"
+        *ngIf="userNameValue?.touched && ! userNameValue?.valid && userNameValue?.dirty && !userNameValue?.hasError('userNameNotAllowed')">
+        Please Enter a valid username
+      </small>
+      <small class="text-danger" *ngIf="userNameValue?.touched && !userNameValue?.dirty">
+        username can't be empty
+      </small>
+      <small class="text-danger" *ngIf="userNameValue?.hasError('minLength')">
+        The username can't be lower than 8 characters
+      </small>
+      <small class="text-danger" *ngIf="userNameValue?.hasError('userNameNotAllowed')">
+        The username is already taken
+      </small>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input formControlName="password" type="password" class="form-control" id="password">
+      <small class="text-danger" *ngIf="passwordValue?.touched && ! passwordValue?.valid && passwordValue?.dirty">Please
+        Enter a valid Password</small>
+      <small class="text-danger" *ngIf="passwordValue?.touched && !passwordValue?.dirty">password can't be empty</small>
+    </div>
+  </form>
+</div>
 
-  <div class="d-block" *ngIf="isLoading">
-    <form [formGroup]="userDetails">
-      <div class="mb-3">
-        <label for="userName" class="form-label">UserName</label>
-        <input formControlName="userName" class="form-control" id="userName">
-        <small class="text-danger" *ngIf="userNameValue?.touched && ! userNameValue?.valid && userNameValue?.dirty">Please Enter a valid username</small>
-        <small class="text-danger" *ngIf="userNameValue?.touched && !userNameValue?.dirty">username can't be empty</small>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input formControlName="password" type="password" class="form-control" id="password">
-        <small class="text-danger" *ngIf="passwordValue?.touched && ! passwordValue?.valid && passwordValue?.dirty">Please Enter a valid Password</small>
-        <small class="text-danger" *ngIf="passwordValue?.touched && !passwordValue?.dirty">password can't be empty</small>
-      </div>
-    </form>
-  </div>
-
-  <div class="d-flex justify-content-center my-4">
-    <button [disabled]="!userDetails.valid" class="btn btn-primary">Submit</button>
-  </div>
+<div class="d-flex justify-content-center my-4">
+  <button [disabled]="!userDetails.valid" class="btn btn-primary">Submit</button>
 </div>

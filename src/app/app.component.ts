@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { ApiService } from './api.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
@@ -9,10 +9,12 @@ import { ApiService } from './api.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(private _apiService: ApiService) { }
+  constructor(private _fb: FormBuilder) { }
   title = 'async-validations-sample';
-  public isLoading: boolean = true
-  
+  userDetails!: FormGroup
+
+
+
   public get userNameValue() {
     return this.userDetails.get('userName')
   }
@@ -21,14 +23,23 @@ export class AppComponent implements OnInit {
     return this.userDetails.get('password')
   }
 
-  userDetails = new FormGroup({
-    'userName': new FormControl('', [Validators.required, Validators.minLength(8)]),
-    'password': new FormControl('', [Validators.required, Validators.minLength(8)])
-  });
-
-
-
   ngOnInit() {
+    this.userDetails = this._fb.group({
+      userName: ['', [Validators.required, Validators.minLength(8)], this.userNameNotAllowed],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    })
+  }
+
+  private userNameNotAllowed(control: FormControl): Promise<any> | Observable<any> {
+    return new Promise((resolve, reject) => {
+      const userNamesInDB = ["userName1", "userName2", "userName3", "userName4", "userName5"]
+      setTimeout(() => {
+        if (userNamesInDB.includes(control.value)) {
+          resolve({ userNameNotAllowed: true })
+        }
+        else resolve(null)
+      }, 2000)
+    })
 
   }
 
